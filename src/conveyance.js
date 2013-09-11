@@ -1,24 +1,13 @@
-define(['models/player', 'models/obstacle', 'levels/level1', 'config'], function(Player, Obstacle, level1, config) {
+define(['models/player', 'models/obstacle', 'models/enemy', 'levels/level1', 'lib/helpers', 'config'],
+function(Player, Obstacle, Enemy, level1, helpers, config) {
   var Conveyance = function() {
     //init
     this.player = new Player(config.player_name);
     this.enemies = [];
     this.obstacles = level1.obstacles.map(function(obs){return new Obstacle(obs);})
-    
-    var key_press = function(e) {
-      console.log(e);
-      switch(e.which) {
-        //f
-        case 70:
-          this.player.fire();
-          break;
-        //space
-        case 32:
-          this.player.jump();
-          break;
-      }
-    }
-    window.onkeydown = key_press.bind(this);
+    this.enemies = level1.enemies.map(function(ene){return new Enemy(ene);})
+
+    window.onkeydown = helpers.key_press.bind(this);
   }
   
   Conveyance.prototype = {
@@ -35,30 +24,27 @@ define(['models/player', 'models/obstacle', 'levels/level1', 'config'], function
       }
     },
     update: function() {
-      this.handle_collisions();
       // calculate the time since the last frame
       var thisFrame = new Date().getTime();
       var dt = (thisFrame - this.lastFrame)/1000;
       if(!dt){dt = 0;}
       this.lastFrame = thisFrame;
       
+      this.handle_collisions();
+      
+      //Update all of the game's objects
       this.player.update(dt);
-      this.obstacles.forEach(function(obstacle){
-        obstacle.update(dt);
-      });
-      this.obstacles = this.obstacles.filter(function(obstacle) {
-        return obstacle.active;
-      });
+      this.enemies.forEach(helpers.update_with_dt.bind(dt));
+      this.obstacles.forEach(helpers.update_with_dt.bind(dt));
+      
+      //Filter objects that are no longer active
+      this.obstacles = this.obstacles.filter(helpers.filter_active);
+      this.enemies = this.enemies.filter(helpers.filter_active);
     },
     handle_collisions: function() {
-      function collides(a, b) {
-        return a.position.x < b.position.x + b.width &&
-               a.position.x + a.width > b.position.x &&
-               a.position.y < b.position.y + b.height &&
-               a.position.y + a.height > b.position.y;
-      }
+      
       this.obstacles.forEach(function(obstacle){
-        if(collides(obstacle, this.player)){
+        if(helpers.collides(obstacle, this.player)){
           this.player.explode();
         }
       }.bind(this));
@@ -69,14 +55,14 @@ define(['models/player', 'models/obstacle', 'levels/level1', 'config'], function
       context.clearRect(0, 0, config.game_width, config.game_height);
       
       context.fillStyle = '#000';
+      
       //Draw the floor
       context.fillRect(0, 400, config.game_width, 80);
       
       //Draw all of the game's objects
       this.player.draw(context);
-      this.obstacles.forEach(function(obstacle){
-        obstacle.draw(context);
-      });
+      this.obstacles.forEach(helpers.draw_with_context.bind(context));
+      this.enemies.forEach(helpers.draw_with_context.bind(context));
       
     }
   }

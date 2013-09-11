@@ -5,7 +5,7 @@ define([], function(){
     this.position = ene.position;
     this.width = ene.width;
     this.height = ene.height;
-    this.color = '#FFFF00';
+    this.color = '#f0f';
     this.active = true;
     this.speed = 200;
   }

@@ -1,4 +1,4 @@
-define(['models/projectile'], function(Projectile){
+define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
   Player = function(name){
     //init
     this.name = name;
@@ -21,12 +21,8 @@ define(['models/projectile'], function(Projectile){
   }
   Player.prototype = {
     update: function(dt) {
-      this.projectiles.forEach(function(projectile) {
-        projectile.update(dt);
-      });
-      this.projectiles = this.projectiles.filter(function(projectile) {
-        return projectile.active;
-      });
+      this.projectiles.forEach(helpers.update_with_dt.bind(dt));
+      this.projectiles = this.projectiles.filter(helpers.filter_active);
       
       //jumping
       if (!this.grounded) {
@@ -62,9 +58,7 @@ define(['models/projectile'], function(Projectile){
       context.fillRect(this.position.x, this.position.y - this.height, this.width, this.height);
       
       //Draw player projectiles
-      this.projectiles.forEach(function(projectile){
-        projectile.draw(context);
-      });
+      this.projectiles.forEach(helpers.draw_with_context.bind(context));
     },
     explode: function() {
       //Player just ran into something

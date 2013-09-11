@@ -36,6 +36,18 @@ define(function(){
         width: 15,
         height: 15
       }
+    ],
+    enemies: [
+      {
+        position: {x: 400, y: 400},
+        width: 10,
+        height: 20,
+      },
+      {
+        position: {x: 1917, y: 360},
+        width: 10,
+        height: 20,
+      }
     ]
   }
 })
