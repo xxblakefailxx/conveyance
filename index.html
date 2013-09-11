@@ -2,6 +2,17 @@
 <html>
     <head>
         <title>Conveyance</title>
+        <style>
+          body {
+            background: #eee;
+          }
+          #conveyance {
+            margin: 35px auto;
+            display: block;
+            background: #fff;
+            border: 1px #ccc solid;
+          }
+        </style>
         <script>
           var require = {
               urlArgs: "bust=" + (new Date()).getTime()
@@ -10,6 +21,6 @@
         <script data-main="src/main" src="src/require.js"></script>
     </head>
     <body>
-        
+        <canvas id='conveyance' width='640' height='480'></canvas>
     </body>
 </html>
