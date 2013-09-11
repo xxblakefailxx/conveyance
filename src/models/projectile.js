@@ -3,10 +3,13 @@ define([], function(){
     //init
     this.position = {x: position.x, y: position.y}
     this.active = true;
+    
+    this.speed = 30;
   }
   Projectile.prototype = {
     update: function() {
-      this.position.x += 8;
+      this.position.x += (this.speed * dt);
+      
       
       //FIXME (put in collision detection?)
       this.active = this.position.x < 640;

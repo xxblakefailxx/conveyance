@@ -3,7 +3,7 @@ define(['models/projectile'], function(Projectile){
     //init
     this.name = name;
     this.active = true;
-    this.position = { x: 320, y: 240 };
+    this.position = { x: 50, y: 400 };
     this.width = 15;
     this.height = 15;
     this.color = '#1e76b0';
@@ -57,10 +57,7 @@ define(['models/projectile'], function(Projectile){
       context.fillText(this.ammo, 635, 475);
       
       //Draw player dot
-      context.beginPath();
-      context.arc(this.position.x, this.position.y, this.width, 0, Math.PI*2, true);
-      context.closePath();
-      context.fill();
+      context.fillRect(this.position.x, this.position.y - this.height, this.width, this.height);
       
       //Draw player projectiles
       this.projectiles.forEach(function(projectile){
@@ -70,6 +67,7 @@ define(['models/projectile'], function(Projectile){
     explode: function() {
       //Player just ran into something
       this.active = false;
+      
     },
     fire: function() {
       if(this.ammo > 0) {
