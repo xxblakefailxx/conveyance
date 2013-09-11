@@ -1,9 +1,13 @@
-define(['models/player', 'models/obstacle', 'config'], function(Player, Obstacle, config) {
+define(['models/player', 'models/obstacle', 'levels/level1', 'config'], function(Player, Obstacle, level1, config) {
   var Conveyance = function() {
     //init
     this.player = new Player(config.player_name);
     this.enemies = [];
-    this.obstacles = [new Obstacle({x: 700, y: 400})];
+    this.obstacles = level1.obstacles.map(function(obs){return new Obstacle(obs);})
+    
+    window.onkeydown = function() {
+      this.player.jump();
+    }.bind(this);
   }
   
   Conveyance.prototype = {

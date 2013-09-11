@@ -1,16 +1,16 @@
 define([], function(){
-  Obstacle = function(position){
+  Obstacle = function(obs){
     //init
-    this.position = {x: position.x, y: position.y}
-    console.log(this.position.x);
+    this.position = obs.position;
+    this.width = obs.width;
+    this.height = obs.height;
     
     this.active = true;
     
-    this.speed = 150;
+    this.speed = 200;
     
     this.color = '#000';
-    this.width = 25;
-    this.height = 35;
+
     
   }
   Obstacle.prototype = {

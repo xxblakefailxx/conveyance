@@ -37,10 +37,12 @@ define(['models/projectile'], function(Projectile){
       
         //we have fallen off the bottom of the sine wave, so continue falling
         //at a predetermined speed
-        if (this.jumpSinWavePos >= Math.PI)
-          //this.position.y += this.jumpHeight / this.jumpHangTime * this.fallMultiplyer * dt;
-          //otherwise move along the sine wave
+        if (this.jumpSinWavePos >= Math.PI) {
           this.grounded = true;
+          
+          this.position.y = 400;
+          //otherwise move along the sine wave
+        }
         else {
           this.position.y -= (Math.sin(this.jumpSinWavePos) - Math.sin(lastHeight)) * this.jumpHeight;
           //this.grounded = true;
