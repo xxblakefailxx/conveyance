@@ -21,6 +21,21 @@ define(function(){
         width: 25,
         height: 35
       },
+      {
+        position: {x: 1900, y: 400}
+        width: 15,
+        height: 20
+      },
+      {
+        position: {x: 1915, y: 400}
+        width: 25,
+        height: 40
+      },
+      {
+        position: {x: 1940, y: 400}
+        width: 15,
+        height: 15
+      }
     ]
   }
 })
