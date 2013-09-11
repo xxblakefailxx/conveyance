@@ -5,9 +5,20 @@ define(['models/player', 'models/obstacle', 'levels/level1', 'config'], function
     this.enemies = [];
     this.obstacles = level1.obstacles.map(function(obs){return new Obstacle(obs);})
     
-    window.onkeydown = function() {
-      this.player.jump();
-    }.bind(this);
+    var key_press = function(e) {
+      console.log(e);
+      switch(e.which) {
+        //f
+        case 70:
+          this.player.fire();
+          break;
+        //space
+        case 32:
+          this.player.jump();
+          break;
+      }
+    }
+    window.onkeydown = key_press.bind(this);
   }
   
   Conveyance.prototype = {

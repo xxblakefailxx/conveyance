@@ -4,10 +4,10 @@ define([], function(){
     this.position = {x: position.x, y: position.y}
     this.active = true;
     
-    this.speed = 30;
+    this.speed = 500;
   }
   Projectile.prototype = {
-    update: function() {
+    update: function(dt) {
       this.position.x += (this.speed * dt);
       
       

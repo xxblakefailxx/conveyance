@@ -22,7 +22,7 @@ define(['models/projectile'], function(Projectile){
   Player.prototype = {
     update: function(dt) {
       this.projectiles.forEach(function(projectile) {
-        projectile.update();
+        projectile.update(dt);
       });
       this.projectiles = this.projectiles.filter(function(projectile) {
         return projectile.active;
@@ -73,7 +73,7 @@ define(['models/projectile'], function(Projectile){
     },
     fire: function() {
       if(this.ammo > 0) {
-        this.projectiles.push(new Projectile(this.position));
+        this.projectiles.push(new Projectile({x: this.position.x + this.width / 2, y: this.position.y - this.height/2 }));
         this.ammo--;
       }
     },
