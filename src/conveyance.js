@@ -4,8 +4,8 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
     //init
     this.player = new Player(config.player_name);
     this.enemies = [];
-    this.obstacles = level1.obstacles.map(function(obs){return new Obstacle(obs);})
-    this.enemies = level1.enemies.map(function(ene){return new Enemy(ene);})
+    this.obstacles = level1.obstacles.map(function(obs){return new Obstacle(obs, config.base_speed);})
+    this.enemies = level1.enemies.map(function(ene){return new Enemy(ene, config.base_speed);})
 
     window.onkeydown = helpers.key_press.bind(this);
   }
@@ -43,11 +43,17 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
     },
     handle_collisions: function() {
       
+      //obstacle, player
       this.obstacles.forEach(function(obstacle){
         if(helpers.collides(obstacle, this.player)){
           this.player.explode();
         }
       }.bind(this));
+      
+      //TODO: Check collisions between:
+        // enemy, player -> player.explode()
+        // obstacle, projectile -> projectile.explode()
+        // enemy, projectile -> enemy.explode(), projectile.explode()
 
     },
     redraw: function(context) {

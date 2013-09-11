@@ -67,7 +67,7 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
     },
     fire: function() {
       if(this.ammo > 0) {
-        this.projectiles.push(new Projectile({x: this.position.x + this.width / 2, y: this.position.y - this.height/2 }));
+        this.projectiles.push(new Projectile({x: this.position.x + this.width / 2, y: this.position.y - this.height/2 }, 'right'));
         this.ammo--;
       }
     },

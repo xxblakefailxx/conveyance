@@ -1,16 +1,22 @@
 define([], function(){
-  Projectile = function(position){
+  Projectile = function(position, direction){
     //init
     this.position = {x: position.x, y: position.y}
     this.active = true;
-    
+    this.direction = direction;
     this.speed = 500;
   }
   Projectile.prototype = {
     update: function(dt) {
-      this.position.x += (this.speed * dt);
-      
-      
+      switch(this.direction) {
+        case 'right':
+          this.position.x += (this.speed * dt);
+          break;
+        case 'left':
+         this.position.x -= (this.speed * dt);
+          break;
+      }
+
       //FIXME (put in collision detection?)
       this.active = this.position.x < 640;
     },
