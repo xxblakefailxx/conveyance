@@ -13,7 +13,7 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
     //Handle an enemy firing
     window.addEventListener('enemy:fire', function (e) {
       var p = e.detail;
-      this.enemy_projectiles.push(new Projectile(p.x, p.y, p.direction, p.color));
+      this.enemy_projectiles.push(new Projectile(p));
     }.bind(this), false);
   }
   
