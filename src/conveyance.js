@@ -3,11 +3,18 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
   var Conveyance = function() {
     //init
     this.player = new Player(config.player_name);
-    this.enemies = [];
+        
     this.obstacles = level1.obstacles.map(function(obs){return new Obstacle(obs, config.base_speed);})
     this.enemies = level1.enemies.map(function(ene){return new Enemy(ene, config.base_speed);})
+    this.enemy_projectiles = [];
 
     window.onkeydown = helpers.key_press.bind(this);
+    
+    //Handle an enemy firing
+    window.addEventListener('enemy:fire', function (e) {
+      var p = e.detail;
+      this.enemy_projectiles.push(new Projectile(p.position, p.direction, p.color));
+    }.bind(this), false);
   }
   
   Conveyance.prototype = {
@@ -36,10 +43,14 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
       this.player.update(dt);
       this.enemies.forEach(helpers.update_with_dt.bind(dt));
       this.obstacles.forEach(helpers.update_with_dt.bind(dt));
+      this.enemy_projectiles.forEach(helpers.update_with_dt.bind(dt));
       
       //Filter objects that are no longer active
       this.obstacles = this.obstacles.filter(helpers.filter_active);
       this.enemies = this.enemies.filter(helpers.filter_active);
+      
+      this.enemy_projectiles = this.enemy_projectiles.filter(helpers.filter_active);
+      
     },
     handle_collisions: function() {
       
@@ -60,16 +71,16 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
         this.player.projectiles.forEach(function(projectile){
           helpers.explode_both_on_collide(enemy, projectile);
         });
+      }.bind(this));
+      
+      this.enemy_projectiles.forEach(function(projectile){
+        //player, enemy projectile
+        helpers.explode_both_on_collide(this.player, projectile);
         
-        enemy.projectiles.forEach(function(projectile){
-          //player, enemy projectile
-          helpers.explode_both_on_collide(this.player, projectile);
-          
-          this.obstacles.forEach(function(obstacle){
-            //obstacle, enemy projectile
-            helpers.explode_first_on_collide(projectile, obstacle);
-          });
-        }.bind(this));
+        this.obstacles.forEach(function(obstacle){
+          //obstacle, enemy projectile
+          helpers.explode_first_on_collide(projectile, obstacle);
+        });
       }.bind(this));
 
     },
@@ -86,6 +97,7 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
       this.player.draw(context);
       this.obstacles.forEach(helpers.draw_with_context.bind(context));
       this.enemies.forEach(helpers.draw_with_context.bind(context));
+      this.enemy_projectiles.forEach(helpers.draw_with_context.bind(context));
       
     }
   }

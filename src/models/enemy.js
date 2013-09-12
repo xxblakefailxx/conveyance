@@ -1,4 +1,4 @@
-define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){ 
+define(['lib/helpers'], function(helpers){ 
   Enemy = function(ene, base_speed){
   //init
     this.position = ene.position;
@@ -7,17 +7,13 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
     this.color = '#f0f';
     this.active = true;
     this.speed = base_speed;
-    this.projectiles = [];
     this.delta_fire = 0;
     this.fire_rate = ene.fire_rate || 0
     this.draw_position = helpers.draw_position(this.position, this.width, this.height)
   }
   
-    Enemy.prototype = {
-    update: function(dt) {
-      this.projectiles.forEach(helpers.update_with_dt.bind(dt));
-      this.projectiles = this.projectiles.filter(helpers.filter_active);
-      
+  Enemy.prototype = {
+    update: function(dt) {      
       //Base speed move (level shifting towards player)
       this.position.x -= (this.speed * dt);
       
@@ -34,22 +30,23 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
       if (this.position.x + this.width < 0) this.explode();
     },
     draw: function(context) {
-      
       context.fillStyle = this.color;
       context.fillRect(this.draw_position.x, this.draw_position.y, this.width, this.height);
-      
-      //Draw
-      this.projectiles.forEach(helpers.draw_with_context.bind(context));
     },
     fire: function() {
-      this.projectiles.push(new Projectile({x: this.position.x + this.width / 2, y: this.position.y - this.height/2 }, 'left', this.color));
+      var event = new CustomEvent('enemy:fire', {
+        'detail': {
+          position: {x: this.position.x + this.width / 2, y: this.position.y - this.height/2 },
+          direction: 'left',
+          color: this.color
+        }
+      });
+      dispatchEvent(event);
     },
     explode: function() {
       this.active = false;
     }
-};
-
+  };
   
   return Enemy
-  })
-  
+})

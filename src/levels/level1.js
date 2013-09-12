@@ -42,13 +42,13 @@ define(function(){
         position: {x: 400, y: 400},
         width: 10,
         height: 20,
-        fire_rate: 2
+        fire_rate: 4
       },
       {
         position: {x: 1917, y: 360},
         width: 10,
         height: 20,
-        fire_rate: 3
+        fire_rate: 1
       }
     ]
   }
