@@ -12,11 +12,11 @@ define(function(){
           break;
       }
     },
-    draw_position: function(position, width, height) {
-      return {
-        x: position.x,
-        y: position.y - height
-      }
+    draw_x: function(x, y, width, height) {
+      return x;
+    },
+    draw_y: function(x, y, width, height) {
+      return y - height;
     },
     update_with_dt: function(object){
       object.update(this);
@@ -25,10 +25,10 @@ define(function(){
       return object.active
     },
     collides: function(a, b) {
-      return a.draw_position.x < b.draw_position.x + b.width &&
-             a.draw_position.x + a.width > b.draw_position.x &&
-             a.draw_position.y < b.draw_position.y + b.height &&
-             a.draw_position.y + a.height > b.draw_position.y;
+      return a.draw_x < b.draw_x + b.width &&
+             a.draw_x + a.width > b.draw_x &&
+             a.draw_y < b.draw_y + b.height &&
+             a.draw_y + a.height > b.draw_y;
     },
     draw_with_context: function(object){
       object.draw(this);

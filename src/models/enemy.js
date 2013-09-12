@@ -1,7 +1,8 @@
 define(['lib/helpers'], function(helpers){ 
   Enemy = function(ene, base_speed){
   //init
-    this.position = ene.position;
+    this.x = ene.x;
+    this.y = ene.y;
     this.width = ene.width;
     this.height = ene.height;
     this.color = '#f0f';
@@ -9,15 +10,16 @@ define(['lib/helpers'], function(helpers){
     this.speed = base_speed;
     this.delta_fire = 0;
     this.fire_rate = ene.fire_rate || 0
-    this.draw_position = helpers.draw_position(this.position, this.width, this.height)
+    this.draw_x = helpers.draw_x(this.x, this.y, this.width, this.height)
   }
   
   Enemy.prototype = {
     update: function(dt) {      
       //Base speed move (level shifting towards player)
-      this.position.x -= (this.speed * dt);
+      this.x -= (this.speed * dt);
       
-      this.draw_position = helpers.draw_position(this.position, this.width, this.height)
+      this.draw_x = helpers.draw_x(this.x, this.y, this.width, this.height)
+      this.draw_y = helpers.draw_y(this.x, this.y, this.width, this.height)
       
       //Fire this.fire_rate times per second
       this.delta_fire += dt;
@@ -27,16 +29,17 @@ define(['lib/helpers'], function(helpers){
       }
       
       //Set as inactive if the enemy has moved past the left-hand side of the screen
-      if (this.position.x + this.width < 0) this.explode();
+      if (this.x + this.width < 0) this.explode();
     },
     draw: function(context) {
       context.fillStyle = this.color;
-      context.fillRect(this.draw_position.x, this.draw_position.y, this.width, this.height);
+      context.fillRect(this.draw_x, this.draw_y, this.width, this.height);
     },
     fire: function() {
       var event = new CustomEvent('enemy:fire', {
         'detail': {
-          position: {x: this.position.x + this.width / 2, y: this.position.y - this.height/2 },
+          x: this.x + this.width / 2,
+          y: this.y - this.height/2,
           direction: 'left',
           color: this.color
         }

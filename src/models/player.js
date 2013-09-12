@@ -3,11 +3,13 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
     //init
     this.name = name;
     this.active = true;
-    this.position = { x: 50, y: 400 };
+    this.x = 50;
+    this.y = 400;
     this.width = 15;
     this.height = 15;
     this.color = '#1e76b0';
-    this.draw_position = helpers.draw_position(this.position, this.width, this.height)
+    this.draw_x = helpers.draw_x(this.x, this.y, this.width, this.height)
+    this.draw_y = helpers.draw_y(this.x, this.y, this.width, this.height)
     
     this.ammo = 100;
     this.projectiles = [];
@@ -38,15 +40,17 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
         if (this.jumpSinWavePos >= Math.PI) {
           this.grounded = true;
           
-          this.position.y = 400;
+          this.y = 400;
           //otherwise move along the sine wave
         }
         else {
-          this.position.y -= (Math.sin(this.jumpSinWavePos) - Math.sin(lastHeight)) * this.jumpHeight;
+          this.y -= (Math.sin(this.jumpSinWavePos) - Math.sin(lastHeight)) * this.jumpHeight;
           //this.grounded = true;
         }
       }
-      this.draw_position = helpers.draw_position(this.position, this.width, this.height)
+      this.draw_x = helpers.draw_x(this.x, this.y, this.width, this.height)
+      this.draw_y = helpers.draw_y(this.x, this.y, this.width, this.height)
+      
       //Somehow remove old projectiles?
     },
     draw: function(context) {
@@ -57,7 +61,7 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
       context.fillText(this.ammo, 635, 475);
       
       //Draw player dot
-      context.fillRect(this.draw_position.x, this.draw_position.y, this.width, this.height);
+      context.fillRect(this.draw_x, this.draw_y, this.width, this.height);
       
       //Draw player projectiles
       this.projectiles.forEach(helpers.draw_with_context.bind(context));
@@ -69,7 +73,7 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
     },
     fire: function() {
       if(this.ammo > 0) {
-        this.projectiles.push(new Projectile({x: this.position.x + this.width / 2, y: this.position.y - this.height/2 }, 'right', this.color));
+        this.projectiles.push(new Projectile(this.x + this.width / 2, this.y - this.height/2 , 'right', this.color));
         this.ammo--;
       }
     },

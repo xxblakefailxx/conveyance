@@ -4,7 +4,7 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
     //init
     this.player = new Player(config.player_name);
         
-    this.obstacles = level1.obstacles.map(function(obs){return new Obstacle(obs, config.base_speed);})
+    this.obstacles = level1.obstacles.map(function(obs){obs.level_speed = config.base_speed; return new Obstacle(obs);})
     this.enemies = level1.enemies.map(function(ene){return new Enemy(ene, config.base_speed);})
     this.enemy_projectiles = [];
 
@@ -13,7 +13,7 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
     //Handle an enemy firing
     window.addEventListener('enemy:fire', function (e) {
       var p = e.detail;
-      this.enemy_projectiles.push(new Projectile(p.position, p.direction, p.color));
+      this.enemy_projectiles.push(new Projectile(p.x, p.y, p.direction, p.color));
     }.bind(this), false);
   }
   
