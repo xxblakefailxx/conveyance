@@ -7,6 +7,8 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
     this.width = 15;
     this.height = 15;
     this.color = '#1e76b0';
+    this.draw_position = helpers.draw_position(this.position, this.width, this.height)
+    
     this.ammo = 100;
     this.projectiles = [];
     
@@ -44,7 +46,7 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
           //this.grounded = true;
         }
       }
-      
+      this.draw_position = helpers.draw_position(this.position, this.width, this.height)
       //Somehow remove old projectiles?
     },
     draw: function(context) {
@@ -55,7 +57,7 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
       context.fillText(this.ammo, 635, 475);
       
       //Draw player dot
-      context.fillRect(this.position.x, this.position.y - this.height, this.width, this.height);
+      context.fillRect(this.draw_position.x, this.draw_position.y, this.width, this.height);
       
       //Draw player projectiles
       this.projectiles.forEach(helpers.draw_with_context.bind(context));
@@ -67,7 +69,7 @@ define(['models/projectile', 'lib/helpers'], function(Projectile, helpers){
     },
     fire: function() {
       if(this.ammo > 0) {
-        this.projectiles.push(new Projectile({x: this.position.x + this.width / 2, y: this.position.y - this.height/2 }, 'right'));
+        this.projectiles.push(new Projectile({x: this.position.x + this.width / 2, y: this.position.y - this.height/2 }, 'right', this.color));
         this.ammo--;
       }
     },

@@ -43,17 +43,34 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
     },
     handle_collisions: function() {
       
-      //obstacle, player
       this.obstacles.forEach(function(obstacle){
-        if(helpers.collides(obstacle, this.player)){
-          this.player.explode();
-        }
+        //obstacle, player
+        helpers.explode_first_on_collide(this.player, obstacle);
+        
+        //obstacle, player projectiles
+        this.player.projectiles.forEach(function(projectile){
+          helpers.explode_first_on_collide(projectile, obstacle);
+        });
       }.bind(this));
       
-      //TODO: Check collisions between:
-        // enemy, player -> player.explode()
-        // obstacle, projectile -> projectile.explode()
-        // enemy, projectile -> enemy.explode(), projectile.explode()
+      this.enemies.forEach(function(enemy){
+        //enemy, player
+        helpers.explode_first_on_collide(this.player, enemy);
+        
+        this.player.projectiles.forEach(function(projectile){
+          helpers.explode_both_on_collide(enemy, projectile);
+        });
+        
+        enemy.projectiles.forEach(function(projectile){
+          //player, enemy projectile
+          helpers.explode_both_on_collide(this.player, projectile);
+          
+          this.obstacles.forEach(function(obstacle){
+            //obstacle, enemy projectile
+            helpers.explode_first_on_collide(projectile, obstacle);
+          });
+        }.bind(this));
+      }.bind(this));
 
     },
     redraw: function(context) {

@@ -1,10 +1,10 @@
-define([], function(){
+define(['lib/helpers'], function(helpers){
   Obstacle = function(obs, base_speed){
     //init
     this.position = obs.position;
     this.width = obs.width;
     this.height = obs.height;
-    
+    this.draw_position = helpers.draw_position(this.position, this.width, this.height)
     this.active = true;
     
     this.speed = base_speed;
@@ -19,11 +19,13 @@ define([], function(){
       this.position.x -= (this.speed * dt);
       
       //Set as inactive if the obstacle has moved past the left-hand side of the screen
-      this.active = this.position.x > (0 - this.width);
+     if (this.position.x + this.width < 0) this.explode();
+      
+      this.draw_position = helpers.draw_position(this.position, this.width, this.height)
     },
     draw: function(context) {
       context.fillStyle = this.color;
-      context.fillRect(this.position.x, this.position.y - this.height, this.width, this.height);
+      context.fillRect(this.draw_position.x, this.draw_position.y, this.width, this.height);
     },
     explode: function() {
       this.active = false;

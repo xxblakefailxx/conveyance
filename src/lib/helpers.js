@@ -12,6 +12,12 @@ define(function(){
           break;
       }
     },
+    draw_position: function(position, width, height) {
+      return {
+        x: position.x,
+        y: position.y - height
+      }
+    },
     update_with_dt: function(object){
       object.update(this);
     },
@@ -19,14 +25,25 @@ define(function(){
       return object.active
     },
     collides: function(a, b) {
-      return a.position.x < b.position.x + b.width &&
-             a.position.x + a.width > b.position.x &&
-             a.position.y > b.position.y - b.height &&
-             a.position.y - a.height < b.position.y;
+      return a.draw_position.x < b.draw_position.x + b.width &&
+             a.draw_position.x + a.width > b.draw_position.x &&
+             a.draw_position.y < b.draw_position.y + b.height &&
+             a.draw_position.y + a.height > b.draw_position.y;
     },
     draw_with_context: function(object){
       object.draw(this);
     },
+    explode_first_on_collide: function(first, second) {
+      if(this.collides(first, second)){
+        first.explode();
+      }
+    },
+    explode_both_on_collide: function(first, second) {
+      if(this.collides(first, second)){
+        first.explode();
+        second.explode();
+      }
+    }
   };
 })
 

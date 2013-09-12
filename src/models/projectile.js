@@ -1,10 +1,15 @@
-define([], function(){
-  Projectile = function(position, direction){
+define(['lib/helpers'], function(helpers){
+  Projectile = function(position, direction, color){
     //init
     this.position = {x: position.x, y: position.y}
     this.active = true;
     this.direction = direction;
     this.speed = 500;
+    this.color = color;
+    this.width = 6;
+    this.height = 6;
+    this.draw_position = helpers.draw_position(this.position, this.width, this.height)
+    
   }
   Projectile.prototype = {
     update: function(dt) {
@@ -16,18 +21,17 @@ define([], function(){
          this.position.x -= (this.speed * dt);
           break;
       }
+      
+      this.draw_position = helpers.draw_position(this.position, this.width, this.height)
 
-      //FIXME (put in collision detection?)
-      this.active = this.position.x < 640;
+      if (this.position.x < 0 || this.position.x > 640) this.explode();
     },
     draw: function(context) {
-      context.beginPath();
-      context.fillStyle='#bf2619';
-      context.arc(this.position.x, this.position.y, 3, 0, Math.PI*2, true);
-      context.closePath();
-      context.fill();
+      context.fillStyle=this.color;
+      context.fillRect(this.draw_position.x, this.draw_position.y, this.width, this.height);
+      
     },
-    explode: function() {
+    explode: function(reason) {
       this.active = false;
     }
   };
