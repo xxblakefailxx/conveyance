@@ -1,4 +1,7 @@
 require(["conveyance"], function(Conveyance) {
-  conveyance = new Conveyance();
-  conveyance.run();
+  (function(){
+    var conveyance = new Conveyance();
+    conveyance.run();
+  })();
+
 });

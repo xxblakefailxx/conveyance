@@ -2,19 +2,22 @@ define(['models/player', 'models/obstacle', 'models/enemy', 'levels/level1', 'li
 function(Player, Obstacle, Enemy, level1, helpers, config) {
   var Conveyance = function() {
     //init
-    this.player = new Player(config.player_name);
+    this.player = new Player({ammo: 100});
         
     this.obstacles = level1.obstacles.map(function(obs){obs.level_speed = config.base_speed; return new Obstacle(obs);})
-    this.enemies = level1.enemies.map(function(ene){return new Enemy(ene, config.base_speed);})
+    this.enemies = level1.enemies.map(function(ene){ene.level_speed = config.base_speed; return new Enemy(ene);})
     this.enemy_projectiles = [];
+    this.player_projectiles = [];
 
     window.onkeydown = helpers.key_press.bind(this);
     
-    //Handle an enemy firing
     window.addEventListener('enemy:fire', function (e) {
-      var p = e.detail;
-      this.enemy_projectiles.push(new Projectile(p));
-    }.bind(this), false);
+      this.enemy_projectiles.push(new Projectile(e.detail));
+    }.bind(this));
+    
+    window.addEventListener('player:fire', function (e) {
+      this.player_projectiles.push(new Projectile(e.detail));      
+    }.bind(this));
   }
   
   Conveyance.prototype = {
@@ -24,10 +27,6 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
         this.redraw(config.canvas.getContext('2d'));
         // start the mainloop
         requestAnimationFrame( this.run.bind(this), config.canvas );
-      }
-      else {
-        //Start over?
-        alert('lose!');
       }
     },
     update: function() {
@@ -44,12 +43,15 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
       this.enemies.forEach(helpers.update_with_dt.bind(dt));
       this.obstacles.forEach(helpers.update_with_dt.bind(dt));
       this.enemy_projectiles.forEach(helpers.update_with_dt.bind(dt));
+      this.player_projectiles.forEach(helpers.update_with_dt.bind(dt));
+      
       
       //Filter objects that are no longer active
       this.obstacles = this.obstacles.filter(helpers.filter_active);
       this.enemies = this.enemies.filter(helpers.filter_active);
       
       this.enemy_projectiles = this.enemy_projectiles.filter(helpers.filter_active);
+      this.player_projectiles = this.player_projectiles.filter(helpers.filter_active);
       
     },
     handle_collisions: function() {
@@ -59,7 +61,7 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
         helpers.explode_first_on_collide(this.player, obstacle);
         
         //obstacle, player projectiles
-        this.player.projectiles.forEach(function(projectile){
+        this.player_projectiles.forEach(function(projectile){
           helpers.explode_first_on_collide(projectile, obstacle);
         });
       }.bind(this));
@@ -68,7 +70,8 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
         //enemy, player
         helpers.explode_first_on_collide(this.player, enemy);
         
-        this.player.projectiles.forEach(function(projectile){
+        //enemy, player projectile
+        this.player_projectiles.forEach(function(projectile){
           helpers.explode_both_on_collide(enemy, projectile);
         });
       }.bind(this));
@@ -98,6 +101,7 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
       this.obstacles.forEach(helpers.draw_with_context.bind(context));
       this.enemies.forEach(helpers.draw_with_context.bind(context));
       this.enemy_projectiles.forEach(helpers.draw_with_context.bind(context));
+      this.player_projectiles.forEach(helpers.draw_with_context.bind(context));
       
     }
   }

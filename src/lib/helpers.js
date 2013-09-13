@@ -36,12 +36,18 @@ define(function(){
     explode_first_on_collide: function(first, second) {
       if(this.collides(first, second)){
         first.explode();
+        console.log("EXPLODE: ");
+        console.log(first);
       }
     },
     explode_both_on_collide: function(first, second) {
       if(this.collides(first, second)){
         first.explode();
         second.explode();
+        console.log("EXPLODE: ");
+        console.log(first);
+        console.log(second);
+        
       }
     }
   };
