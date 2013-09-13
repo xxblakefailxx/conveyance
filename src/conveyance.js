@@ -5,7 +5,7 @@ function(Player, Obstacle, Enemy, level1, helpers, config) {
     this.player = new Player(config.player_name);
         
     this.obstacles = level1.obstacles.map(function(obs){obs.level_speed = config.base_speed; return new Obstacle(obs);})
-    this.enemies = level1.enemies.map(function(ene){return new Enemy(ene, config.base_speed);})
+    this.enemies = level1.enemies.map(function(ene){ene.level_speed = config.base_speed; return new Enemy(ene);})
     this.enemy_projectiles = [];
 
     window.onkeydown = helpers.key_press.bind(this);
